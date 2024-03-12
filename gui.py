@@ -68,7 +68,7 @@ class TextAnalysisGUI:
                     preprocessed_text = ' '.join(self.text_preprocessor.preprocess_text(text_data))
                 
                     # Vectorize the preprocessed text data
-                    vectorizer, tfidf_matrix = self.topic_modeler.vectorize_text([preprocessed_text()])
+                    vectorizer, tfidf_matrix = self.topic_modeler.vectorize_text([preprocessed_text])
 
                 
                     # Train the LDA model

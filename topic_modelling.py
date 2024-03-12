@@ -9,27 +9,35 @@ from gensim import corpora
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
+import re
 
 # Download NLTK resources
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 
-# Preprocessing function
 def preprocess_text(text):
-    tokens = word_tokenize(text)
-    tokens = [token.lower() for token in tokens if token.isalnum()]
-    stop_words = set(stopwords.words('english'))
-    tokens = [token for token in tokens if token not in stop_words]
-    lemmatizer = WordNetLemmatizer()
-    tokens = [lemmatizer.lemmatize(token) for token in tokens]
+    # Convert text to lowercase
+    text = text.lower()
+    
+    # Remove any non-alphanumeric characters
+    text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
+    
+    # Tokenize the text into words
+    tokens = text.split()
+    
     return tokens
-
 # Vectorization function
+# Vectorization function
+tfidf_vectorizer = TfidfVectorizer(tokenizer=preprocess_text, token_pattern=None)
+
 def vectorize_text(text_data):
-    vectorizer = TfidfVectorizer(tokenizer=preprocess_text)
-    tfidf_matrix = vectorizer.fit_transform(text_data)
+    preprocessed_text = [preprocess_text(text) for text in text_data]
+    print("Preprocessed Text:", preprocessed_text)
+    vectorizer = TfidfVectorizer(tokenizer=lambda x: x, lowercase=False)
+    tfidf_matrix = vectorizer.fit_transform(preprocessed_text)
     return vectorizer, tfidf_matrix
+
 
 # LDA model training function
 def train_lda_model(tfidf_matrix, num_topics, vectorizer):
